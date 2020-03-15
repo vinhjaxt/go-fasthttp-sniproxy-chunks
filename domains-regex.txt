@@ -1,0 +1,27 @@
+# Separate by line
+
+# Telegram
+\.telegram\.org$
+^telegram\.org$
+
+# Discord
+\.discordapp\.com$
+^discordapp.com$
+^gateway\.discord\.gg$
+\.gateway\.discord\.gg$
+\.discordapp\.net$
+^discordapp\.net$
+
+# MS Office
+\.office\.com$
+^office\.com$
+
+# Youtube
+#^youtube\.com$
+#\.youtube\.com$
+#^ytimg\.com$
+#\.ytimg\.com$
+
+# raidforums.com
+^raidforums\.com$
+\.raidforums\.com$
