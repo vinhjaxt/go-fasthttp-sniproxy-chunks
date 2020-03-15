@@ -1,3 +1,6 @@
+# Cách bypass này lấy ý tưởng từ @SadeghHayeri
+tại https://github.com/SadeghHayeri/GreenTunnel
+- Thật tuyệt vời, với cách này, ta vẫn có thể vượt được ISP mà không cần thêm cert và không gặp vấn đề chứng chỉ cũng như CloudFlare
 # Giới thiệu
 - Khi tôi làm việc trên công ty, có một số điều khó chịu, đó là mạng của công ty đã không cho tôi truy cập vào các trang web như: telegram, discord, slack,.. Bắt buộc tôi phải sử dụng vpn (với cấu hình tcp ở port 443). Điều này thật khó chịu, và tôi là sinh viên, làm gì có tiền thuê vps chứ.
 Hơn nữa, tốc độ truy cập giảm đáng kể khi ta sử dụng vpn hay socks.
@@ -12,12 +15,11 @@ Do vậy, với nhu cầu, tình hình hiện tại, tôi đã nảy ra ý tư�
 
 # Sử dụng
 ## Yêu cầu đơn giản nhất
-- Bạn đã tải về phần mềm của tôi ở mục [Releases](https://github.com/vinhjaxt/go-fasthttp-sniproxy/releases)
+- Bạn đã tải về phần mềm của tôi ở mục [Releases](https://github.com/vinhjaxt/go-fasthttp-sniproxy-chunks/releases)
 - Bạn có Extension để thay đổi Proxy trên Chrome hoặc Firefox (khuyên dùng foxyproxy)
 - Có một số kiến thức liên quan (hoặc nhờ người bạn xã hội nào đó =))) )
 ## Các bước thực hiện
 - Xác định tên miền trang web mà bạn muốn vượt: ví dụ telegram.org, discordapp.com
-- Tải và Cài đặt chứng chỉ này trên máy hay trình duyệt của bạn: [ca.pem](https://raw.githubusercontent.com/vinhjaxt/go-fasthttp-sniproxy/master/ca.pem)
 - Giải nén file bạn đã download về, liệt kê các tên miền đó rồi cho vào file `domains.txt` (hoặc, nếu bạn biết về regular expression, bạn có thể thay đổi file `domains-regex.txt` để thực hiện điều tương tự)
 - Chạy phần mềm của tôi, bạn có thể thêm `-h` để xem các options
 - Thay đổi proxy của trình duyệt hay hệ thống: Cấu hình foxyproxy như ảnh dưới đây
@@ -25,7 +27,7 @@ Do vậy, với nhu cầu, tình hình hiện tại, tôi đã nảy ra ý tư�
 - Sử dụng cấu hình này
 - Truy cập trang web mà bạn muốn (sử dụng https:// )
 ## Hướng dẫn chi tiết
-- [Các bước sử dụng trên windows](https://github.com/vinhjaxt/go-fasthttp-sniproxy/issues/1)
+- [Các bước sử dụng trên windows](https://github.com/vinhjaxt/go-fasthttp-sniproxy-chunks/issues/1)
 
 # Credits and Thanks
 - Thank to @eternal-flame-AD https://github.com/eternal-flame-AD/go-pixiv
