@@ -10,8 +10,9 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var httpClientTimeout = 15 * time.Second
-var dialTimeout = 7 * time.Second
+const httpClientTimeout = 15 * time.Second
+const dialTimeout = 7 * time.Second
+
 var httpClient = &fasthttp.Client{
 	ReadTimeout:         30 * time.Second,
 	MaxConnsPerHost:     233,

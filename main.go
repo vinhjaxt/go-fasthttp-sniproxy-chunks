@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"flag"
 	"io"
 	"io/ioutil"
 	"log"
 	"net"
 	"regexp"
+	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -155,10 +157,11 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 }
 
 var config struct {
-	port            int
-	domainList      string
-	domainRegexList string
-	dnsEndpoint     string
+	port             int
+	domainList       string
+	domainRegexList  string
+	dnsEndpoint      string
+	skipDNSTLSVerify string
 }
 
 var domainProxiesCache = map[string]bool{}
@@ -231,10 +234,23 @@ func main() {
 	flag.IntVar(&config.port, "p", 8080, "listen port")
 	flag.StringVar(&config.domainList, "d", "domains.txt", "Domains List File")
 	flag.StringVar(&config.domainRegexList, "r", "domains-regex.txt", "Domains Regex List File")
-	flag.StringVar(&config.dnsEndpoint, "dns", "https://1.0.0.1/dns-query", "DNS https enpoint")
+	flag.StringVar(&config.dnsEndpoint, "dns", "https://1.0.0.1/dns-query", "DNS https endpoint")
+	if runtime.GOOS == "windows" {
+		// Ohhhh, fuck windows :'(, yeah I don't add roots ca
+		flag.StringVar(&config.skipDNSTLSVerify, "skip-dns-tls-verify", "yes", "Skip verify DNS https endpoint")
+	} else {
+		flag.StringVar(&config.skipDNSTLSVerify, "skip-dns-tls-verify", "no", "Skip verify DNS https endpoint")
+	}
 	flag.Parse()
 	dnsEndpointQs = config.dnsEndpoint + "?ct=application/dns-json&type=A&do=false&cd=false"
 	log.Println("Config", config)
+
+	config.skipDNSTLSVerify = strings.ToLower(config.skipDNSTLSVerify)
+	if config.skipDNSTLSVerify == "yes" || config.skipDNSTLSVerify == "true" {
+		httpClient.TLSConfig = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
 
 	if parseDomains() == false {
 		return
