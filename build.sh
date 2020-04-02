@@ -27,4 +27,9 @@ goversioninfo -icon=icon.ico
 GOOS=windows GOARCH=amd64 go build
 zip go-fasthttp-sniproxy-chunks-win64.zip domains.txt domains-regex.txt go-fasthttp-sniproxy-chunks.exe
 
+echo 'Building macOS amd64..'
+rm -f resource.syso
+GOOS=darwin GOARCH=amd64 go build
+zip go-fasthttp-sniproxy-chunks-macos.zip domains.txt domains-regex.txt go-fasthttp-sniproxy-chunks
+
 rm -f resource.syso
