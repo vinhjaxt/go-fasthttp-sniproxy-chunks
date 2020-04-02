@@ -105,42 +105,36 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 
 	// log.Println(string(ctx.Path()), string(ctx.Host()), ctx.String(), "\r\n\r\n", ctx.Request.String())
 
-	host := string(ctx.Host())
-	if len(host) < 1 {
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
-		log.Println("Reject: Empty host")
-		return
-	}
-
-	hostname, port, err := net.SplitHostPort(host)
-	if err != nil {
-		if err1, ok := err.(*net.AddrError); ok && strings.Index(err1.Err, "missing port") != -1 {
-			hostname, port, err = net.SplitHostPort(host + ":80")
-		}
-		if err != nil {
-			ctx.SetStatusCode(fasthttp.StatusBadRequest)
-			log.Println("Reject: Invalid host", host, err)
-			return
-		}
-	}
-
-	cacheAddrMapLock.RLock()
-	tcpAddr, ok := cacheTCPAddrMap[host]
-	cacheAddrMapLock.RUnlock()
-	if ok == false {
-		tcpAddr, err = getUsableIP(hostname, port)
-		if err != nil {
-			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-			log.Println("No usable IP:", host, err)
-			return
-		}
-		cacheAddrMapLock.Lock()
-		cacheTCPAddrMap[host] = tcpAddr
-		cacheAddrMapLock.Unlock()
-	}
-
 	// https connecttion
 	if bytes.Equal(ctx.Method(), []byte("CONNECT")) {
+		host := string(ctx.RequestURI())
+		hostname, port, err := net.SplitHostPort(host)
+		if err != nil {
+			if err1, ok := err.(*net.AddrError); ok && strings.Index(err1.Err, "missing port") != -1 {
+				hostname, port, err = net.SplitHostPort(host + ":80")
+			}
+			if err != nil {
+				ctx.SetStatusCode(fasthttp.StatusBadRequest)
+				log.Println("Reject: Invalid host", host, err)
+				return
+			}
+		}
+
+		cacheAddrMapLock.RLock()
+		tcpAddr, ok := cacheTCPAddrMap[host]
+		cacheAddrMapLock.RUnlock()
+		if ok == false {
+			tcpAddr, err = getUsableIP(hostname, port)
+			if err != nil {
+				ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+				log.Println("No usable IP:", host, err)
+				return
+			}
+			cacheAddrMapLock.Lock()
+			cacheTCPAddrMap[host] = tcpAddr
+			cacheAddrMapLock.Unlock()
+		}
+
 		err = httpsHandler(ctx, hostname, tcpAddr)
 		if err != nil {
 			ctx.SetStatusCode(fasthttp.StatusInternalServerError)
@@ -149,10 +143,10 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	err = httpClient.DoTimeout(&ctx.Request, &ctx.Response, httpClientTimeout)
+	err := httpClient.DoTimeout(&ctx.Request, &ctx.Response, httpClientTimeout)
 	if err != nil {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		log.Println("httpHandler:", host, err)
+		log.Println("httpHandler:", string(ctx.Host()), err)
 	}
 }
 
